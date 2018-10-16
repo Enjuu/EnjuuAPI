@@ -51,7 +51,7 @@ public class App
 				HashMap<String , Object> res = new HashMap<String, Object>();
 				res.put("result", "The API is working");
 				res.put("boolean", 1);
-				return JSON.createJSON(res);
+				return JSON.createJSON(res, request);
 			}
 		});
     }

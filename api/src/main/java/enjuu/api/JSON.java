@@ -3,15 +3,16 @@ package enjuu.api;
 import java.util.HashMap;
 import java.util.Map;
 
+import spark.Request;
+
 public class JSON {
 	
-	public static String createJSON(HashMap<String, Object> map) {
+	public static String createJSON(HashMap<String, Object> map, Request req) {
+		System.out.println("GET "+req.ip()+" "+req.url());
 		String end = "{";
-		System.out.println(map.size());
 		int i = 0;
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			i++;
-		    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 		    if(i == map.size()) {
 		    	end = end + "\n \""+entry.getKey()+"\": \""+entry.getValue()+"\"";
 		    }else {
