@@ -82,7 +82,30 @@ public class App
 					return JSON.createJSON(res, request);
 				}else {
 					try {
-						
+						if(!(request.queryParams("name") == null)) {
+							try {
+							HashMap<String , Object> res = new HashMap<String, Object>();
+							
+							String sql = "SELECT * FROM `achievements` WHERE `name` = " + request.queryParams("name");
+							Statement st = crunchifyConn.createStatement();
+						    ResultSet rs = st.executeQuery(sql);
+						    int i = 0;
+						    while(rs.next()) {
+						    	i++;
+						    	res.put("id", rs.getInt("id"));
+						    	res.put("name", rs.getString("name"));
+						    	res.put("description", rs.getString("description"));
+						    	res.put("icon", rs.getString("icon"));
+						    	res.put("version", rs.getInt("version"));
+						    }
+						    if(i == 0) throw new Exception();
+						    return JSON.createJSON(res, request);
+						}catch (Exception e) {
+							HashMap<String , Object> res = new HashMap<String, Object>();
+							res.put("result", "Achievement " + request.queryParams("id")+" not found");
+							return JSON.createJSON(res, request);
+						}
+						}
 						HashMap<String , Object> res = new HashMap<String, Object>();
 						
 						String sql = "SELECT * FROM `achievements` WHERE `id` = " + request.queryParams("id");
