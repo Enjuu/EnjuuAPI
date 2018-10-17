@@ -22,7 +22,7 @@ public class App
 	public static Connection connection = null;
 	
 	/**
-	 * Main void for starting the api
+	 * Main void for starting the API
 	 * 
 	 * @throws ParseException 
 	 * @throws IOException 
@@ -55,7 +55,12 @@ public class App
 		});
         
         /**
-         * Ping if the API is working
+         * returns:
+         * @return result as string
+         * @return boolean as int
+         * 
+         * error:
+         * @return null
          */
         Spark.get(new Route("/ping") {
 			
@@ -68,15 +73,26 @@ public class App
 			}
 		});
         
-        /**
-         * Archivements
-         */
+        // routes:
+        // /achievements?name=
+        // /achievements?id=
         
-        Spark.get(new Route("/achievements/get") {
+        /**
+         * returns:
+         * @return id as string
+         * @return name as string
+         * @return description as string
+         * @return icon as string
+         * @return version as string
+         * 
+         * error:
+         * @return result as string
+         */
+        Spark.get(new Route("/achievements") {
 			
 			@Override
 			public Object handle(Request request, Response response) {
-				if(request.queryParams("id") == null) {
+				if(request.queryParams("id") == null && request.queryParams("name") == null) {
 					HashMap<String , Object> res = new HashMap<String, Object>();
 					res.put("result", "Achievement null not found");
 					return JSON.createJSON(res, request);
@@ -102,7 +118,7 @@ public class App
 						    return JSON.createJSON(res, request);
 						}catch (Exception e) {
 							HashMap<String , Object> res = new HashMap<String, Object>();
-							res.put("result", "Achievement " + request.queryParams("id")+" not found");
+							res.put("result", "Achievement " + request.queryParams("name")+" not found");
 							return JSON.createJSON(res, request);
 						}
 						}
@@ -130,6 +146,76 @@ public class App
 				}
 			}
 		});
+        
+        // routes:
+        // /badges?name=
+        // /badges?id=
+        
+        /**
+         * returns:
+         * @return id as string
+         * @return name as string
+         * @return icon as string
+         * 
+         * error:
+         * @return result as string
+         */
+        Spark.get(new Route("/badges") {
+			
+			@Override
+			public Object handle(Request request, Response response) {
+				if(request.queryParams("id") == null && request.queryParams("name") == null) {
+					HashMap<String , Object> res = new HashMap<String, Object>();
+					res.put("result", "Badge null not found");
+					return JSON.createJSON(res, request);
+				}else {
+					try {
+						if(!(request.queryParams("name") == null)) {
+							try {
+							HashMap<String , Object> res = new HashMap<String, Object>();
+							
+							String sql = "SELECT * FROM `badges` WHERE `name` = " + request.queryParams("name");
+							Statement st = crunchifyConn.createStatement();
+						    ResultSet rs = st.executeQuery(sql);
+						    int i = 0;
+						    while(rs.next()) {
+						    	i++;
+						    	res.put("id", rs.getInt("id"));
+						    	res.put("name", rs.getString("name"));
+						    	res.put("icon", rs.getString("icon"));
+						    }
+						    if(i == 0) throw new Exception();
+						    return JSON.createJSON(res, request);
+						}catch (Exception e) {
+							HashMap<String , Object> res = new HashMap<String, Object>();
+							res.put("result", "Badge " + request.queryParams("name")+" not found");
+							return JSON.createJSON(res, request);
+						}
+						}
+						HashMap<String , Object> res = new HashMap<String, Object>();
+						
+						String sql = "SELECT * FROM `badges` WHERE `id` = " + request.queryParams("id");
+						Statement st = crunchifyConn.createStatement();
+					    ResultSet rs = st.executeQuery(sql);
+					    int i = 0;
+					    while(rs.next()) {
+					    	i++;
+					    	res.put("id", rs.getInt("id"));
+					    	res.put("name", rs.getString("name"));
+					    	res.put("icon", rs.getString("icon"));
+					    }
+					    if(i == 0) throw new Exception();
+					    return JSON.createJSON(res, request);
+					}catch (Exception e) {
+						HashMap<String , Object> res = new HashMap<String, Object>();
+						res.put("result", "Badge " + request.queryParams("id")+" not found");
+						return JSON.createJSON(res, request);
+					}
+				}
+			}
+			
+		}) ;
+       
     }
     
 	private static void makeJDBCConnection() {
