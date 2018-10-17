@@ -1,1 +1,1 @@
-{"sparkport":"80","mysqlip":"localhost","mysqlusername":"root","mysqlport":"3306","mysqldatabase":"ripple","mysqlpassword":""}
+{"sparkport":"4455","mysqlip":"127.0.0.1","mysqlusername":"root","mysqlport":"3306","mysqldatabase":"ripple","mysqlpassword":""}
