@@ -72,13 +72,13 @@ public class App
          * Archivements
          */
         
-        Spark.get(new Route("/archivements/get") {
+        Spark.get(new Route("/achievements/get") {
 			
 			@Override
 			public Object handle(Request request, Response response) {
 				if(request.queryParams("id") == null) {
 					HashMap<String , Object> res = new HashMap<String, Object>();
-					res.put("result", "Archivement null not found");
+					res.put("result", "Achievement null not found");
 					return JSON.createJSON(res, request);
 				}else {
 					try {
@@ -101,7 +101,7 @@ public class App
 					    return JSON.createJSON(res, request);
 					}catch (Exception e) {
 						HashMap<String , Object> res = new HashMap<String, Object>();
-						res.put("result", "Archivement " + request.queryParams("id")+" not found");
+						res.put("result", "Achievement " + request.queryParams("id")+" not found");
 						return JSON.createJSON(res, request);
 					}
 				}
