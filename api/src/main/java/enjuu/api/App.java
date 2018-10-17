@@ -4,11 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
 import org.json.simple.parser.ParseException;
-
 
 import spark.Request;
 import spark.Response;
@@ -64,6 +65,43 @@ public class App
 				res.put("result", "The API is working");
 				res.put("boolean", 1);
 				return JSON.createJSON(res, request);
+			}
+		});
+        
+        /**
+         * Archivements
+         */
+        
+        Spark.get(new Route("/archivments/get") {
+			
+			@Override
+			public Object handle(Request request, Response response) {
+				if(request.queryParams("id") == null) {
+					HashMap<String , Object> res = new HashMap<String, Object>();
+					res.put("result", "Archivement null not found");
+					return JSON.createJSON(res, request);
+				}else {
+					try {
+						
+						HashMap<String , Object> res = new HashMap<String, Object>();
+						
+						String sql = "SELECT * FROM `achievements` WHERE `id` = " + request.queryParams("id");
+						Statement st = crunchifyConn.createStatement();
+					    ResultSet rs = st.executeQuery(sql);
+					    while(rs.next()) {
+					    	res.put("id", rs.getInt("id"));
+					    	res.put("name", rs.getString("name"));
+					    	res.put("description", rs.getString("description"));
+					    	res.put("icon", rs.getString("icon"));
+					    	res.put("version", rs.getInt("version"));
+					    }
+					    return JSON.createJSON(res, request);
+					}catch (Exception e) {
+						HashMap<String , Object> res = new HashMap<String, Object>();
+						res.put("result", "Archivement " + request.queryParams("id")+" not found");
+						return JSON.createJSON(res, request);
+					}
+				}
 			}
 		});
     }
