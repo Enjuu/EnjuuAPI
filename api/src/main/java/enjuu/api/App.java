@@ -72,7 +72,7 @@ public class App
          * Archivements
          */
         
-        Spark.get(new Route("/archivments/get") {
+        Spark.get(new Route("/archivements/get") {
 			
 			@Override
 			public Object handle(Request request, Response response) {
@@ -88,13 +88,16 @@ public class App
 						String sql = "SELECT * FROM `achievements` WHERE `id` = " + request.queryParams("id");
 						Statement st = crunchifyConn.createStatement();
 					    ResultSet rs = st.executeQuery(sql);
+					    int i = 0;
 					    while(rs.next()) {
+					    	i++;
 					    	res.put("id", rs.getInt("id"));
 					    	res.put("name", rs.getString("name"));
 					    	res.put("description", rs.getString("description"));
 					    	res.put("icon", rs.getString("icon"));
 					    	res.put("version", rs.getInt("version"));
 					    }
+					    if(i == 0) throw new Exception();
 					    return JSON.createJSON(res, request);
 					}catch (Exception e) {
 						HashMap<String , Object> res = new HashMap<String, Object>();
